@@ -31,6 +31,7 @@
     "cookie": "^0.4.1"
   },
   "devDependencies": {
+    "@types/har-format": "^1.2.5",
     "@types/jest": "^26.0.19",
     "@types/node": "12.12.2",
     "@types/tough-cookie": "2.3.2",

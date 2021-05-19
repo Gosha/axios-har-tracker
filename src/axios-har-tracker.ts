@@ -1,4 +1,5 @@
-import { AxiosStatic } from 'axios';
+import { AxiosRequestConfig, AxiosStatic } from 'axios';
+import type * as Har from "har-format";
 import * as cookie from 'cookie';
 
 interface HarFile {
@@ -82,14 +83,18 @@ export class AxiosHarTracker {
     );
   }
 
-  private returnRequestObject(config) {
-    const requestObject = {
+  private returnRequestObject(config: AxiosRequestConfig) {
+    const requestObject: Har.Request = {
       method: config.method,
       url: config.url,
       httpVersion: 'HTTP/1.1',
       cookies: this.getCookies(JSON.stringify(config.headers['Cookie'])),
-      headers: this.getHeaders(config.headers['common']),
+      headers: this.getHeaders({...config.headers['common'], ...config.headers[config.method]}),
       queryString: this.getParams(config.params),
+      postData: config.method == 'post' ? {
+        mimeType: config.headers['content-type'],
+        text: config.data
+      } : undefined,
       headersSize: -1,
       bodySize: -1
     };
